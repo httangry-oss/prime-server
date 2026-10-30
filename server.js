@@ -224,5 +224,5 @@ loadState();
 serverLoop();
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {[span_0](start_span)[span_0](end_span) console.log(`서버 가동 중: http://localhost:${PORT}`);
+server.listen(PORT, () => { console.log(`서버 가동 중: http://localhost:${PORT}`); 
 });
