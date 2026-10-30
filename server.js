@@ -141,11 +141,13 @@ const server = http.createServer((req, res) => {
     if (req.url === '/') {
         fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
             if (err) {
-                res.writeHead(500);
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
                 res.end('index.html 파일을 찾을 수 없습니다.');
                 return;
             }
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            // 💡 이 부분을 아래와 같이 세팅하면 브라우저가 정상적인 웹페이지로 인식합니다.
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.writeHead(200);
             res.end(data);
         });
     } else if (req.url === '/stream') {
