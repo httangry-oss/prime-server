@@ -124,18 +124,80 @@ process.on('SIGTERM', () => {
     process.exit(0);
 });
 
+// HTML 화면을 코드 내부에 직접 포함시켜 경로 문제 원천 차단
+const htmlContent = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Live Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        #result {
+            font-size: 10vw;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+            text-align: center;
+        }
+        #timer {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+    <div id="result">연결 중...</div>
+    <div id="timer">서버에서 실시간 데이터를 받아오고 있습니다</div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        const timerDiv = document.getElementById('timer');
+        let targetTime = 0;
+        let currentStep = 0;
+
+        const evtSource = new EventSource('/stream');
+
+        evtSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            resultDiv.textContent = data.number.toLocaleString();
+            targetTime = data.nextChangeTime;
+            currentStep = data.step;
+        };
+
+        function updateTimerUI() {
+            if (targetTime > 0) {
+                const remaining = Math.max(0, targetTime - Date.now());
+                if (remaining > 100 && currentStep < 150) {
+                    timerDiv.textContent = \`다음 숫자까지: \${(remaining / 1000).toFixed(1)}초 (\${(currentStep + 1).toLocaleString()}번째 소수)\`;
+                } else {
+                    timerDiv.textContent = \`서버 실시간 중계 중 (\${(currentStep + 1).toLocaleString()}번째 소수)\`;
+                }
+            }
+            requestAnimationFrame(updateTimerUI);
+        }
+
+        requestAnimationFrame(updateTimerUI);
+    </script>
+</body>
+</html>`;
+
 const server = http.createServer((req, res) => {
     if (req.url === '/') {
-        const filePath = path.join(__dirname, 'index.html');
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end('index.html 파일을 읽어오지 못했습니다.');
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(data);
-        });
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(htmlContent);
     } else if (req.url === '/stream') {
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',
@@ -162,6 +224,5 @@ loadState();
 serverLoop();
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`서버 가동 중: http://localhost:${PORT}`);
+server.listen(PORT, () => {[span_0](start_span)[span_0](end_span) console.log(`서버 가동 중: http://localhost:${PORT}`);
 });
