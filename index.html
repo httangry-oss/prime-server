@@ -1,87 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px '.AppleSystemUIFontMonospaced'}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px '.AppleSystemUIFontMonospaced'; min-height: 15.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Live Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0d1117;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        #result {
+            font-size: 10vw;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+            text-align: center;
+        }
+        #timer {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #8b949e;
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="ko"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Prime Live Server&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@700&amp;display=swap" rel="stylesheet"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #0d1117;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#result {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 10vw;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ffffff; /* 화이트 색상으로 변경 */</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-shadow: 0 0 30px rgba(255, 255, 255, 0.4); /* 은은한 흰색 네온 효과 */</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#timer {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.5rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #8b949e;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="result"&gt;연결 중...&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="timer"&gt;서버에서 실시간 데이터를 받아오고 있습니다&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const resultDiv = document.getElementById('result');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const timerDiv = document.getElementById('timer');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let targetTime = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let currentStep = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// 서버의 실시간 중계 통로(/stream)에 연결</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const evtSource = new EventSource('/stream');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>evtSource.onmessage = (event) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const data = JSON.parse(event.data);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// 서버가 보내준 소수를 그대로 화면에 출력</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resultDiv.textContent = data.number.toLocaleString();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>targetTime = data.nextChangeTime;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>currentStep = data.step;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// 남은 시간 카운트다운 표시용 UI 루프</p>
-<p class="p1"><span class="Apple-converted-space">        </span>function updateTimerUI() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (targetTime &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const remaining = Math.max(0, targetTime - Date.now());</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (remaining &gt; 100 &amp;&amp; currentStep &lt; 150) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timerDiv.textContent = `다음 숫자까지: ${(remaining / 1000).toFixed(1)}초 (${(currentStep + 1).toLocaleString()}번째 소수)`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>timerDiv.textContent = `서버 실시간 중계 중 (${(currentStep + 1).toLocaleString()}번째 소수)`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>requestAnimationFrame(updateTimerUI);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>requestAnimationFrame(updateTimerUI);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <div id="result">연결 중...</div>
+    <!-- 아래 안내 문구를 화면에서 지우고 싶다면 이 줄을 삭제하거나 주석 처리하세요 -->
+    <div id="timer">서버에서 실시간 데이터를 받아오고 있습니다</div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        const timerDiv = document.getElementById('timer');
+        let targetTime = 0;
+        let currentStep = 0;
+
+        // 서버의 실시간 중계 통로(/stream)에 연결
+        const evtSource = new EventSource('/stream');
+
+        evtSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            // 서버가 보내준 소수를 그대로 화면에 출력
+            resultDiv.textContent = data.number.toLocaleString();
+            targetTime = data.nextChangeTime;
+            currentStep = data.step;
+        };
+
+        // 남은 시간 카운트다운 표시용 UI 루프
+        function updateTimerUI() {
+            if (targetTime > 0) {
+                const remaining = Math.max(0, targetTime - Date.now());
+                if (remaining > 100 && currentStep < 150) {
+                    timerDiv.textContent = `다음 숫자까지: ${(remaining / 1000).toFixed(1)}초 (${(currentStep + 1).toLocaleString()}번째 소수)`;
+                } else {
+                    timerDiv.textContent = `서버 실시간 중계 중 (${(currentStep + 1).toLocaleString()}번째 소수)`;
+                }
+            }
+            requestAnimationFrame(updateTimerUI);
+        }
+
+        requestAnimationFrame(updateTimerUI);
+    </script>
 </body>
 </html>
