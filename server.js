@@ -2,7 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-// 진행 상태를 저장할 파일 경로
 const STATE_FILE = path.join(__dirname, 'state.json');
 
 let currentNumber = 2;
@@ -10,7 +9,6 @@ let stepCount = 0;
 let nextChangeTime = Date.now() + 10000;
 const clients = new Set();
 
-// 1. 서버 시작 시 기존 저장 파일(state.json)이 있으면 불러오기
 function loadState() {
     try {
         if (fs.existsSync(STATE_FILE)) {
@@ -29,7 +27,6 @@ function loadState() {
     console.log('[최초 시작] 저장된 기록이 없어 첫 번째 소수(2)부터 새로 시작합니다.');
 }
 
-// 2. 현재 상태를 파일에 저장하는 함수 (비동기 저장으로 서버 멈춤 방지)
 let isSaving = false;
 function saveStateAsync() {
     if (isSaving) return;
@@ -45,7 +42,6 @@ function saveStateAsync() {
     });
 }
 
-// 3. 서버가 꺼질 때 즉시 확실하게 저장하는 함수 (동기 방식)
 function saveStateSync() {
     try {
         const data = JSON.stringify({
@@ -60,7 +56,6 @@ function saveStateSync() {
     }
 }
 
-// 소수 판별 및 다음 소수 계산
 function isPrime(num) {
     if (num < 2) return false;
     if (num === 2) return true;
@@ -81,16 +76,13 @@ function getNextPrime(num) {
     return next;
 }
 
-// 딜레이 설정 (첫 번째 값 '2'는 10분간 지속, 그 이후부터 점진적으로 가속)
 function getDelay(step) {
     if (step === 0) {
-        return 10 * 60 * 1000; // 정확히 10분 (600,000ms)
+        return 10 * 60 * 1000; // 첫 2는 10분 지속
     }
-    // step 1부터는 10초(10000ms)에서 출발해 점점 빨라짐 (최소 30ms 제한)
     return Math.max(30, 10000 * Math.exp(-(step - 1) / 50));
 }
 
-// 접속 중인 모든 클라이언트에게 현재 숫자 전송
 function broadcast() {
     const payload = JSON.stringify({
         number: currentNumber,
@@ -102,14 +94,12 @@ function broadcast() {
     }
 }
 
-// 메인 계산 루프
 function serverLoop() {
     const delay = getDelay(stepCount);
     nextChangeTime = Date.now() + delay;
 
     broadcast();
 
-    // 딜레이가 1초 이상일 때는 숫자가 바뀔 때마다 즉시 저장
     if (delay >= 1000) {
         saveStateAsync();
     }
@@ -121,12 +111,10 @@ function serverLoop() {
     }, delay);
 }
 
-// 고속 구간 진입 시 디스크 무리를 줄이기 위해 1초마다 주기적으로 백업
 setInterval(() => {
     saveStateAsync();
 }, 1000);
 
-// 터미널에서 Ctrl+C 로 끄거나 클라우드 서버가 재시작 신호(SIGTERM)를 보낼 때 마지막 숫자 즉시 저장
 process.on('SIGINT', () => {
     saveStateSync();
     process.exit(0);
@@ -136,18 +124,16 @@ process.on('SIGTERM', () => {
     process.exit(0);
 });
 
-// 웹 서버 설정
 const server = http.createServer((req, res) => {
     if (req.url === '/') {
-        fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
+        const filePath = path.join(__dirname, 'index.html');
+        fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
                 res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end('index.html 파일을 찾을 수 없습니다.');
+                res.end('index.html 파일을 읽어오지 못했습니다.');
                 return;
             }
-            // 💡 이 부분을 아래와 같이 세팅하면 브라우저가 정상적인 웹페이지로 인식합니다.
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.writeHead(200);
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
             res.end(data);
         });
     } else if (req.url === '/stream') {
@@ -172,7 +158,6 @@ const server = http.createServer((req, res) => {
     }
 });
 
-// 1) 이전 기록 불러오기 -> 2) 계산 루프 가동 -> 3) 서버 열기
 loadState();
 serverLoop();
 
