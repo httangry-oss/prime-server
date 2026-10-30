@@ -1,0 +1,10 @@
+{
+  "name": "prime-live-server",
+  "version": "1.0.0",
+  "description": "24/7 Prime Number Live Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
